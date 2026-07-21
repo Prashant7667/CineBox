@@ -2,6 +2,8 @@ package com.example.movies_recommendation_engine.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +27,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         auth->auth
                                 .requestMatchers("/users/**").permitAll()
+                                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                                .requestMatchers("/actuator/**").permitAll()
                                 .anyRequest().authenticated()
 
 
@@ -32,6 +36,10 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .headers(headers->headers.frameOptions(frame->frame.sameOrigin()));
         return http.build();
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
     @Bean
     public PasswordEncoder passwordEncoder(){

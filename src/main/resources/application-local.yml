@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/movie_engine
+  data:
+    redis:
+      host: localhost
+      port: 6379

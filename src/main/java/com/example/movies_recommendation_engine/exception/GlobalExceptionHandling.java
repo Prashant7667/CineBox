@@ -3,6 +3,7 @@ package com.example.movies_recommendation_engine.exception;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -36,6 +37,11 @@ public class GlobalExceptionHandling {
     public ResponseEntity<ApiError>DuplicateException (DuplicateException ex){
         ApiError apiError = new ApiError(409, "Duplicate Entry ", ex.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
+    }
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ApiError>methodNotAllowed(HttpRequestMethodNotSupportedException ex){
+        ApiError apiError = new ApiError(405, "Method Not Allowed", ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(apiError);
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ApiError>exception(Exception ex){

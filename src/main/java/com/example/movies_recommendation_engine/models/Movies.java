@@ -33,6 +33,7 @@ public class Movies {
     Long duration;
     String language;
     String genre;
+    String description;
     @CreatedDate
     @Column(nullable = false, updatable = false)
     LocalDateTime createdAt;

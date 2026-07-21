@@ -37,7 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authToken);
             filterChain.doFilter(request,response);
         } catch (Exception e) {
-            throw new AuthenticationException("User can't be authenticated because user name and password is incorrect");
+            //would not be able to catch authentication exception as the problem is that filters bypass rest controller advice --> it if failing before event the request reached out to controller -> servlet -> filter -> interceptors-> controllers
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Invalid or expired token\"}");
         }
 
 

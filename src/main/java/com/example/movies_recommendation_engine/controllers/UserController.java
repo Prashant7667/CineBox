@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/Users/")
+@RequestMapping("/users")
 public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;

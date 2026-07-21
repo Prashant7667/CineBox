@@ -11,4 +11,5 @@ public class MovieResponse {
     Long duration;
     String language;
     String genre;
+    String description;
 }

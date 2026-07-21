@@ -9,21 +9,26 @@ import com.example.movies_recommendation_engine.models.Shows;
 import com.example.movies_recommendation_engine.repository.MovieRepository;
 import com.example.movies_recommendation_engine.repository.ScreensRepository;
 import com.example.movies_recommendation_engine.repository.ShowsRepository;
+import org.springframework.ai.document.Document;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class MovieService {
     private final MovieRepository movieRepository;
     private final ShowsRepository showsRepository;
     private final ScreensRepository screensRepository;
-    public MovieService(MovieRepository movieRepository, ShowsRepository showsRepository, ScreensRepository screensRepository){
+    private final VectorStore vectorStore;
+    public MovieService(MovieRepository movieRepository, ShowsRepository showsRepository, ScreensRepository screensRepository, VectorStore vectorStore){
         this.movieRepository=movieRepository;
         this.showsRepository=showsRepository;
         this.screensRepository=screensRepository;
+        this.vectorStore=vectorStore;
     }
     public MovieResponse addMovies(MovieRequest movieRequest){
         if(movieRepository.existsByNameAndLanguage(movieRequest.getName(), movieRequest.getLanguage())){
@@ -34,8 +39,21 @@ public class MovieService {
         movie.setLanguage(movieRequest.getLanguage());
         movie.setDuration(movieRequest.getDuration());
         movie.setGenre(movieRequest.getGenre());
+        movie.setDescription(movieRequest.getDescription());
         movieRepository.save(movie);
-        return new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre());
+        Document doc = new Document(
+                "movie-"+movie.getId(),
+                 movie.getDescription(),
+                Map.of(
+                        "movieId", movie.getId(),
+                        "name", movie.getName(),
+                        "genre", movie.getGenre(),
+                        "language", movie.getLanguage()
+                )
+
+        );
+        vectorStore.add(List.of(doc));
+        return new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre(), movie.getDescription());
     }
     public void removeMovies(Long movieId){
         Movies movie = movieRepository.findById(movieId).orElseThrow(()-> new NotFoundException("Movie not found with this id: " + movieId));
@@ -45,13 +63,13 @@ public class MovieService {
         List<Movies>movies = movieRepository.findAll();
         List<MovieResponse>movieResponses = new ArrayList<>();
         for(Movies movie : movies){
-            movieResponses.add(new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre()));
+            movieResponses.add(new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre(), movie.getDescription()));
         }
         return movieResponses;
     }
     public MovieResponse getMovieById(Long id){
         Movies movie = movieRepository.findById(id).orElseThrow(()-> new NotFoundException("Movie not found with this id: " + id));
-        return new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre());
+        return new MovieResponse(movie.getId(), movie.getName(), movie.getDuration(),movie.getLanguage(),movie.getGenre(), movie.getDescription());
     }
     public ShowResponse addShows(ShowRequest showRequest){
 

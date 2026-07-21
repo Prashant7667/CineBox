@@ -26,13 +26,8 @@ public class Booking {
     Long id;
     @ManyToOne
     Shows show;
-    @ManyToMany
-    @JoinTable(
-            name = "booking_seats",
-            joinColumns = @JoinColumn(name = "booking_id"),
-            inverseJoinColumns = @JoinColumn(name = "seat_id")
-    )
-    List<Seats> bookingSeats = new ArrayList<>();
+    @OneToMany(mappedBy = "booking", cascade = CascadeType.ALL)
+    List<BookedSeats> bookedSeats;
     @ManyToOne
     User user;
     @CreatedDate

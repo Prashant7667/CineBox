@@ -1,5 +1,6 @@
 package com.example.movies_recommendation_engine.exception;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -45,6 +46,11 @@ public class GlobalExceptionHandling {
     public ResponseEntity<ApiError>accessDeniedException(Exception ex){
         ApiError apiError = new ApiError(403, "Access Not Granted", ex.getMessage(), LocalDateTime.now());
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ApiError>dataIntegrityVilationException(DataIntegrityViolationException ex){
+        ApiError apiError = new ApiError(409, "Data already exist", ex.getMessage(), LocalDateTime.now());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(apiError);
     }
 
 }

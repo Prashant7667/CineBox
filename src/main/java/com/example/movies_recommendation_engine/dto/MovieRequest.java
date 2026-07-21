@@ -14,4 +14,6 @@ public class MovieRequest {
     String language;
     @NotBlank
     String genre;
+    @NotBlank
+    String description;
 }

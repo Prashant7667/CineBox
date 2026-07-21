@@ -12,4 +12,5 @@ public interface MovieRepository extends JpaRepository<Movies, Long> {
     Optional<Movies>findById(Long id);
     List<Movies>findByGenreAndLanguage(String genre, String language);
     Boolean existsByNameAndLanguage(String name, String language);
+    Optional<Movies>findByName(String name);
 }

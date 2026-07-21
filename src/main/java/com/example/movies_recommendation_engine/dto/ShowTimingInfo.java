@@ -2,20 +2,14 @@ package com.example.movies_recommendation_engine.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.data.util.Pair;
 
 import java.time.LocalDateTime;
-import java.util.List;
-
 @Data
 @AllArgsConstructor
-public class BookingResponse {
-    Long id;
-    String movieName;
+public class ShowTimingInfo {
+    Long showId;
     String screenName;
     String buildingName;
-    String userName;
     double price;
-    LocalDateTime showTime;
-    List<Pair<String,Long>> seatNames;
+    LocalDateTime startTime;
 }

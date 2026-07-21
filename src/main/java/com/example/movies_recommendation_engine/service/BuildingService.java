@@ -3,14 +3,12 @@ package com.example.movies_recommendation_engine.service;
 import com.example.movies_recommendation_engine.dto.BuildingRequest;
 import com.example.movies_recommendation_engine.dto.BuildingResponse;
 import com.example.movies_recommendation_engine.dto.ScreensResponse;
-import com.example.movies_recommendation_engine.exception.NotFoundException;
 import com.example.movies_recommendation_engine.models.CinemaBuilding;
 import com.example.movies_recommendation_engine.models.Screens;
 import com.example.movies_recommendation_engine.models.Seats;
 import com.example.movies_recommendation_engine.repository.BuildingRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,11 +38,5 @@ public class BuildingService {
             screensResponses.add(screensResponse);
         }
         return new BuildingResponse(cinemaBuilding.getId(), cinemaBuilding.getName(), cinemaBuilding.getLocation(), screensResponses);
-    }
-    public CinemaBuilding addScreens(Screens screens){
-        CinemaBuilding cinemaBuilding = buildingRepository.findById(screens.getCinemaBuilding().getId()).orElseThrow(()->new NotFoundException("No building is linked for this screen"));
-        screens.setCinemaBuilding(cinemaBuilding);
-        cinemaBuilding.getScreens().add(screens);
-        return buildingRepository.save(cinemaBuilding);
     }
 }

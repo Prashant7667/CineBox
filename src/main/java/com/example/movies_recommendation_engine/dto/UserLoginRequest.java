@@ -1,8 +1,8 @@
 package com.example.movies_recommendation_engine.dto;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -14,7 +14,7 @@ public class UserLoginRequest {
     @Email
     private String email;
     @NotBlank
-    @Min(8)
+    @Size(min = 8)
     private String password;
 
 }
